@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import connection
 
 # Create your models here.
 class Doctor(models.Model):
@@ -20,3 +21,68 @@ class Doctor(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def search_keyword(keyword):
+        with connection.cursor() as cursor:
+            cursor.execute(f'''	SELECT 
+                doctor_id
+            FROM m_place.doctor as doctor
+            left join m_place.department_doctor_map as ddm
+            on doctor.doctor_id = ddm.doctor_id_id
+            left join m_place.department as depart
+            on ddm.department_id_id = depart.department_id
+            where concat(doctor.name, doctor.hospital_name, depart.name) regexp '{keyword}' 
+            or depart.alias like '{keyword}'
+            group by doctor_id
+            ''')
+            row = cursor.fetchall()
+        return row
+
+    def get_doctor(ids):
+        rows = []
+        with connection.cursor() as cursor:
+            for id in ids:
+                cursor.execute(f'''	SELECT 
+                    doctor_id, 
+                    doctor.name as doctor_name,
+                    doctor.hospital_name,
+                    doctor.weekday_treatment_start,
+                    doctor.weekday_treatment_end,
+                    doctor.saturday_treatment_start,
+                    doctor.saturday_treatment_end,
+                    doctor.sunday_treatment_start,
+                    doctor.sunday_treatment_end,
+                    doctor.lunch_start,
+                    doctor.lunch_end,
+                    depart.name,
+                    depart.alias,
+                    depart.health_insurance
+                    FROM m_place.doctor as doctor
+                inner join m_place.department_doctor_map as ddm
+                on doctor.doctor_id = ddm.doctor_id_id
+                inner join m_place.department as depart
+                on ddm.department_id_id = depart.department_id
+                where doctor_id = '{id}'
+                ''')
+                rows.append(cursor.fetchall())
+        
+        doctors = []
+        for (idx, id) in enumerate(ids):
+            doctors.append(list(filter(lambda x:x[0] == id, rows[idx])))
+            doctors[idx] = {
+                'id': doctors[idx][0][0],
+                'name': doctors[idx][0][1],
+                'hospital_name': doctors[idx][0][2],
+                'weekday_treatment_start': doctors[idx][0][3],
+                'weekday_treatment_end': doctors[idx][0][4],
+                'saturday_treatment_start': doctors[idx][0][5],
+                'saturday_treatment_end': doctors[idx][0][6],
+                'sunday_treatment_start': doctors[idx][0][7],
+                'sunday_treatment_end': doctors[idx][0][8],
+                'lunch_start': doctors[idx][0][9],
+                'lunch_end': doctors[idx][0][10],
+                'depart': (doctors[idx][0][12] if doctors[idx][0][12] else doctors[idx][0][11]),
+                'health_insurance': doctors[idx][0][13],
+            }
+        
+        return doctors
