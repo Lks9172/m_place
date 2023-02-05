@@ -47,6 +47,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'patient',
+    'treatmen_request',
+    'department',
+    'doctor',
+    'department_doctor_map',
 ]
 
 MIDDLEWARE = [
