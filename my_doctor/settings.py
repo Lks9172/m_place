@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'patient',
-    'treatmen_request',
+    'treatment',
     'department',
     'doctor',
     'department_doctor_map',
@@ -124,7 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
