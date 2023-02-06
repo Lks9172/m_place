@@ -5,14 +5,32 @@ from .date_utils import get_treatement_date, get_expiration_date, get_date_info
 
 
 # Create your views here.
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PATCH'])
 def generate_trearment(request):
     if request.method == 'GET':
         doctor_id = request.data.get('doctor_id')
-        print(doctor_id)
         treatment = Treatment.objects.filter(doctor_id = doctor_id, success_flag = False)
         res = list(map(lambda x: x.get_dict(), treatment))
+
         return Response(res)
+
+    elif request.method == 'PATCH':
+        treatment_id = request.data.get('treatment_id')
+        try:
+            treatment = Treatment.objects.get(treatment_id = treatment_id, success_flag = False)
+            treatment.success_flag = True
+            treatment.save()
+            treatment = treatment.get_dict()
+        except Treatment.DoesNotExist:
+            return Response('Not Found Error', status=404)
+        treatment = treatment.get_dict()
+        return Response({
+            'treatment_id': treatment.treatment_id,
+            'patient_name': treatment.name,
+            'treatment_time': treatment.treatment_time,
+            'end_time': treatment.end_time
+        })
+
     elif request.method == 'POST':
         doctor = Doctor.objects.get(doctor_id = request.data.get('doctor_id'))
         patient = Patient.objects.get(patient_id = request.data.get('patient_id'))
@@ -25,6 +43,8 @@ def generate_trearment(request):
         }
         day, treatement_time, now_date, now_time = get_date_info(datetime_info)
         treatement_datetime = get_treatement_date(doctor, datetime_info, day, treatement_time)
+        if not treatement_datetime:
+            return Response({'treatement_day': '영업시간아님'})
         expiration_date = get_expiration_date(now_time, doctor, now_date, day)
         
         treatment = Treatment.objects.create(

@@ -3,19 +3,19 @@ from datetime import datetime, timedelta, date, time
 def get_treatement_date(doctor, date_info, day, treatement_time):
     if day == 5:
         if not doctor.saturday_treatment_start or not doctor.saturday_treatment_end:
-            return '영업시간아님'
+            return False
         if doctor.saturday_treatment_start >  treatement_time or treatement_time > doctor.saturday_treatment_end:
-            return '영업시간아님'
+            return False
     elif day == 6:
         if not doctor.sunday_treatment_start or not doctor.sunday_treatment_end:
-            return '영업시간아님'
+            return False
         if doctor.sunday_treatment_start >  treatement_time or treatement_time > doctor.sunday_treatment_end:
-            return '영업시간아님'
+            return False
     elif 0 <= day and day < 5:
         if not doctor.weekday_treatment_start or not doctor.weekday_treatment_end:
-            return '영업시간아님'
+            return False
         if doctor.weekday_treatment_start >  treatement_time or treatement_time > doctor.weekday_treatment_end:
-            return '영업시간아님'
+            return False
     return datetime(date_info['year'], date_info['month'], date_info['day'], treatement_time.hour, treatement_time.minute)
 
 def add_datetime_time(d_time, time, minutes):
