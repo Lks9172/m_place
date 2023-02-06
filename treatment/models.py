@@ -16,5 +16,15 @@ class Treatment(models.Model):
     class Meta:
         db_table = 'treatment'
 
+    def get_dict(self):
+        return {
+            'treatment_id': self.treatment_id,
+            'doctor_name': self.doctor_id.name,
+            'success_flag': self.success_flag,
+            'patient_name': self.patient_id.name,
+            'treatment_time': self.treatment_time,
+            'end_time': self.end_time
+        }
+
     def __str__(self):
-        return self.name
+        return f'{self.treatment_id}'
