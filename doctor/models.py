@@ -86,3 +86,71 @@ class Doctor(models.Model):
             }
         
         return doctors
+    
+    def get_doctor_working_time(weekday):
+        with connection.cursor() as cursor:
+            cursor.execute(f'''	SELECT 
+                doctor_id, 
+                doctor.name as doctor_name,
+                doctor.hospital_name,
+                doctor.{weekday}_treatment_start,
+                doctor.{weekday}_treatment_end,
+                doctor.lunch_start,
+                doctor.lunch_end
+                FROM m_place.doctor as doctor
+                where doctor.{weekday}_treatment_start is not null and 
+                doctor.{weekday}_treatment_end is not null
+            ''')
+            rows = list(cursor.fetchall())
+        
+            for (idx, row) in enumerate(rows):
+                rows[idx] = {
+                    'id': row[0],
+                    'name': row[1],
+                    'hospital_name': row[2],
+                    'weekday_treatment_start': row[3],
+                    'weekday_treatment_end': row[4],
+                    'lunch_start': row[5],
+                    'lunch_end': row[6],
+                }
+        
+            return rows
+    
+    def get_doctor_info(ids):
+        rows = []
+        with connection.cursor() as cursor:
+            for id in ids:
+                print(id)
+                cursor.execute(f'''	SELECT 
+                    doctor_id, 
+                    doctor.name as doctor_name,
+                    doctor.hospital_name,
+                    doctor.weekday_treatment_start,
+                    doctor.weekday_treatment_end,
+                    doctor.saturday_treatment_start,
+                    doctor.saturday_treatment_end,
+                    doctor.sunday_treatment_start,
+                    doctor.sunday_treatment_end,
+                    doctor.lunch_start,
+                    doctor.lunch_end
+                    FROM m_place.doctor as doctor
+                where doctor_id = '{id}'
+                ''')
+                rows.append(cursor.fetchone())
+        
+            for (idx, row) in enumerate(rows):
+                rows[idx] = {
+                    'id': row[0],
+                    'name': row[1],
+                    'hospital_name': row[2],
+                    'weekday_treatment_start': row[3],
+                    'weekday_treatment_end': row[4],
+                    'saturday_treatment_start': row[5],
+                    'saturday_treatment_end': row[6],
+                    'sunday_treatment_start': row[7],
+                    'sunday_treatment_end': row[8],
+                    'lunch_start': row[9],
+                    'lunch_end': row[10],
+                }
+        
+            return rows

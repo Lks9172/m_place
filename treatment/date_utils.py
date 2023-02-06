@@ -1,5 +1,14 @@
 from datetime import datetime, timedelta, date, time
 
+def get_weekday_by_str(day):
+    if day == 5:
+        return 'saturday'
+    elif day == 6:
+        return 'sunday'
+    elif 0 <= day and day < 5:
+        return 'weekday'
+    return False
+
 def get_treatement_date(doctor, date_info, day, treatement_time):
     if day == 5:
         if not doctor.saturday_treatment_start or not doctor.saturday_treatment_end:

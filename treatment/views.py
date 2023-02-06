@@ -63,4 +63,4 @@ def generate_trearment(request):
             'expiration_day': expiration_date,
         }
 
-        return Response(res)
+        return Response('invalid value error', status=400)
