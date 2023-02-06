@@ -44,11 +44,11 @@ def generate_trearment(request):
         day, treatement_time, now_date, now_time = get_date_info(datetime_info)
         treatement_datetime = get_treatement_date(doctor, datetime_info, day, treatement_time)
         if not treatement_datetime:
-            return Response({'treatement_day': '영업시간아님'})
+            return Response('의사의 영업시간이 아님', status=400)
         expiration_date = get_expiration_date(now_time, doctor, now_date, day)
         
         treatment = Treatment.objects.create(
-                success_flag = False, 
+                success_flag = False,
                 doctor_id = doctor,
                 patient_id = patient,
                 treatment_time = treatement_datetime,
