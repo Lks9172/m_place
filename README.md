@@ -5,7 +5,8 @@ Db: mysql 8.x
 Language: python 3.9.x
 Web_Framework: Django 4.1.6
 ```
-
+<br/>
+<br/>
 
 ### 프로젝트 세팅 방법
 
@@ -36,6 +37,8 @@ pip install -r requirements.txt
 python3 manage.py runserver
 ```
 
+<br/>
+<br/>
 
 ### Description
 
