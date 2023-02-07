@@ -1,29 +1,39 @@
+### 개발환경
+```
+Os: m1 Mac
+Db: mysql 8.x
+Language: python 3.9.x
+Web_Framework: Django 4.1.6
+```
+
 
 ### 프로젝트 세팅 방법
 
+.env파일 세팅
 ```
-# .env파일 세팅
+# 
 # 경로 - 프로젝트 root디렉토리
-# 아래의 ?에 DB정보를 채워 실행하시면 됩니다.
+# 아래는 .env파일의 구성예시이며 ?에 DB정보를 채워 실행하시면 됩니다.
+-----------
 DB_HOST=?
 DB_PORT=?
 DB_USERNAME=?
 DB_PASSWORD=?
 DB_NAME=?
-
+-----------
 
 # 가상환경 설치 및 실행
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 
 # pip upgrade
-python -m pip install --upgrade pip
+python3 -m pip install --upgrade pip
 
 # 의존성 설치
 pip install -r requirements.txt
 
 # django 실행
-python manage.py runserver
+python3 manage.py runserver
 ```
 
 
