@@ -5,7 +5,7 @@ from .date_utils import get_treatement_date, get_expiration_date, get_date_info
 
 
 # Create your views here.
-@api_view(['GET', 'POST', 'PATCH'])
+@api_view(['GET', 'POST', 'PUT'])
 def generate_trearment(request):
     if request.method == 'GET':
         doctor_id = request.data.get('doctor_id')
@@ -14,21 +14,21 @@ def generate_trearment(request):
 
         return Response(res)
 
-    elif request.method == 'PATCH':
+    elif request.method == 'PUT':
         treatment_id = request.data.get('treatment_id')
         try:
             treatment = Treatment.objects.get(treatment_id = treatment_id, success_flag = False)
             treatment.success_flag = True
             treatment.save()
-            treatment = treatment.get_dict()
         except Treatment.DoesNotExist:
             return Response('Not Found Error', status=404)
         treatment = treatment.get_dict()
+        
         return Response({
-            'treatment_id': treatment.treatment_id,
-            'patient_name': treatment.name,
-            'treatment_time': treatment.treatment_time,
-            'end_time': treatment.end_time
+            'treatment_id': treatment['treatment_id'],
+            'patient_name': treatment['patient_name'],
+            'treatment_time': treatment['treatment_time'],
+            'end_time': treatment['end_time']
         })
 
     elif request.method == 'POST':
@@ -63,4 +63,4 @@ def generate_trearment(request):
             'expiration_day': expiration_date,
         }
 
-        return Response('invalid value error', status=400)
+        return Response(res)
